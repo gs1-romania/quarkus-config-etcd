@@ -1,0 +1,11 @@
+name: Quarkus Config Etcd
+#description: Quarkus Config Etcd ...
+metadata:
+#  keywords:
+#    - quarkus-config-etcd
+#  guide: ...
+#  categories:
+#    - "miscellaneous"
+#  status: "preview"
+  config:
+  - "quarkus.etcd-config."
