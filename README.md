@@ -1,5 +1,7 @@
 # ETCD Config Source
 
+Inspired from: https://github.com/quarkiverse/quarkus-config-extensions
+
 ## Usage
 
 ```xml
