@@ -1,11 +1,8 @@
 package ro.gs1.quarkus.config.etcd.runtime;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.UncheckedIOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -20,6 +17,7 @@ import io.etcd.jetcd.ClientBuilder;
 import io.etcd.jetcd.KV;
 import io.etcd.jetcd.KeyValue;
 import io.etcd.jetcd.kv.GetResponse;
+import io.etcd.jetcd.options.GetOption;
 import io.smallrye.config.common.MapBackedConfigSource;
 
 public class EtcdClientWrapper {
@@ -41,7 +39,10 @@ public class EtcdClientWrapper {
       if (config.configKey == null || !config.configKey.isPresent()) {
          throw new RuntimeException("ETCD enabled without config-key configured.");
       }
-      CompletableFuture<GetResponse> response = kvClient.get(EtcdUtils.bs(config.configKey.get()));
+      CompletableFuture<GetResponse> response = kvClient.get(EtcdUtils.bs(config.configKey.get()),
+            GetOption.newBuilder()
+                  .isPrefix(true)
+                  .build());
       try {
          List<KeyValue> kvs;
          if (config.agent.readTimeout != null) {
@@ -51,9 +52,12 @@ public class EtcdClientWrapper {
             GetResponse getResponse = response.get();
             kvs = getResponse.getKvs();
          }
-         return kvs.stream()
-               .map(aa -> toConfigSource(aa))
-               .collect(Collectors.toList());
+         Map<String, String> configSourceRaw = kvs.stream()
+               .collect(Collectors.toMap(aa -> EtcdUtils.removePrefix(config.configKey.get(), aa.getKey()),
+                     bb -> EtcdUtils.sb(bb.getValue())));
+         logger.infov("Found {0} ETCD config keys.", configSourceRaw.size());
+         configSourceRaw.entrySet().stream().forEach(aa -> logger.infov("Key {0} found", aa.getKey()));
+         return Collections.singletonList(toConfigSource(configSourceRaw));
       } catch (InterruptedException | ExecutionException | TimeoutException e) {
          throw new RuntimeException("ETCD timeout on key " + config.configKey.get(), e);
       }
@@ -79,11 +83,11 @@ public class EtcdClientWrapper {
       return client;
    }
 
-   public ConfigSource toConfigSource(KeyValue response) {
-      logger.debugv("Attempting to convert data of key '{0}' to a list of ConfigSource objects", response.getKey());
-      ConfigSource result = new EtcdPropertiesConfigSource(EtcdUtils.sb(response.getKey()),
-            EtcdUtils.sb(response.getValue()), ORDINAL);
-      logger.debugv("Done converting data of key '{0}' into a ConfigSource", response.getKey());
+   public ConfigSource toConfigSource(Map<String, String> response) {
+      logger.debugv("Attempting to convert data of key '{0}' to a list of ConfigSource objects",
+            config.configKey.get());
+      ConfigSource result = new EtcdPropertiesConfigSource(config.configKey.get(), response, ORDINAL);
+      logger.debugv("Done converting data of key '{0}' into a ConfigSource", config.configKey.get());
       return result;
    }
 
@@ -93,19 +97,8 @@ public class EtcdClientWrapper {
 
       private static final String NAME_FORMAT = "EtcdPropertiesConfigSource[key=%s]";
 
-      EtcdPropertiesConfigSource(String key, String input, int ordinal) {
-         super(String.format(NAME_FORMAT, key), readProperties(input), ordinal);
-      }
-
-      @SuppressWarnings({ "rawtypes", "unchecked" })
-      private static Map<String, String> readProperties(String rawData) {
-         try (StringReader br = new StringReader(rawData)) {
-            final Properties properties = new Properties();
-            properties.load(br);
-            return (Map<String, String>) (Map) properties;
-         } catch (IOException e) {
-            throw new UncheckedIOException(e);
-         }
+      EtcdPropertiesConfigSource(String key, Map<String, String> input, int ordinal) {
+         super(String.format(NAME_FORMAT, key), input, ordinal);
       }
    }
 }

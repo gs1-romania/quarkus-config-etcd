@@ -11,6 +11,11 @@ import io.etcd.jetcd.ByteSequence;
 
 public class EtcdUtils {
 
+   public static String removePrefix(String prefix, ByteSequence bs) {
+      String sb = sb(bs);
+      return sb.replaceFirst("^" + (prefix.endsWith("/") ? prefix : prefix + "/"), sb);
+   }
+
    public static ByteSequence bs(String... keys) {
       StringJoiner sj = new StringJoiner("/");
       for (String key : keys) {
