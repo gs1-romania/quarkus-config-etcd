@@ -13,7 +13,7 @@ public class EtcdUtils {
 
    public static String removePrefix(String prefix, ByteSequence bs) {
       String sb = sb(bs);
-      return sb.replaceFirst("^" + (prefix.endsWith("/") ? prefix : (prefix + "/")), sb);
+      return sb.replaceFirst("^" + (prefix.endsWith("/") ? prefix : (prefix + "/")), "");
    }
 
    public static ByteSequence bs(String... keys) {

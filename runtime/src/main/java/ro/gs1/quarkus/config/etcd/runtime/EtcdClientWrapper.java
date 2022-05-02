@@ -55,7 +55,7 @@ public class EtcdClientWrapper {
          Map<String, String> configSourceRaw = kvs.stream()
                .collect(Collectors.toMap(aa -> EtcdUtils.removePrefix(config.configKey.get(), aa.getKey()),
                      bb -> EtcdUtils.sb(bb.getValue())));
-         logger.infov("Found {0} ETCD config keys.", configSourceRaw.size());
+         logger.infov("Found {0} ETCD config keys in {1}.", configSourceRaw.size(), config.configKey.get());
          configSourceRaw.entrySet().stream().forEach(aa -> logger.infov("Key {0} found", aa.getKey()));
          return Collections.singletonList(toConfigSource(configSourceRaw));
       } catch (InterruptedException | ExecutionException | TimeoutException e) {
