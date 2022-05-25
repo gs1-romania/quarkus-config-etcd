@@ -36,6 +36,18 @@ jobs:
         package-name: 'ro.gs1.quarkus-config-etcd'
         ignore-versions: '^[v\d.]+(?!-SNAPSHOT)$'
         min-versions-to-keep: 0
+        
+    - uses: actions/delete-package-versions@v2
+      with: 
+        package-name: 'ro.gs1.quarkus-config-etcd-parent'
+        ignore-versions: '^[v\d.]+(?!-SNAPSHOT)$'
+        min-versions-to-keep: 0
+        
+    - uses: actions/delete-package-versions@v2
+      with: 
+        package-name: 'ro.gs1.quarkus-config-etcd-deployment'
+        ignore-versions: '^[v\d.]+(?!-SNAPSHOT)$'
+        min-versions-to-keep: 0
 
     - name: Build with Maven
       run: mvn -s $GITHUB_WORKSPACE/.github/workflows/maven-settings.xml -B package --file pom.xml -Dmaven.test.skip=true -q
