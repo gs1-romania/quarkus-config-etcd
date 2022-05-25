@@ -26,8 +26,6 @@ public class EtcdClientWrapper {
 
    private static final int ORDINAL = 270;
 
-   private Client client;
-
    private EtcdConfig config;
 
    public EtcdClientWrapper(EtcdConfig config) {
@@ -35,7 +33,8 @@ public class EtcdClientWrapper {
    }
 
    public List<ConfigSource> getProperties() {
-      KV kvClient = getClient().getKVClient();
+      Client client = getClient();
+      KV kvClient = client.getKVClient();
       if (config.configKey == null || !config.configKey.isPresent()) {
          throw new RuntimeException("ETCD enabled without config-key configured.");
       }
@@ -56,7 +55,10 @@ public class EtcdClientWrapper {
                .collect(Collectors.toMap(aa -> EtcdUtils.removePrefix(config.configKey.get(), aa.getKey()),
                      bb -> EtcdUtils.sb(bb.getValue())));
          logger.infov("Found {0} ETCD config keys in {1}.", configSourceRaw.size(), config.configKey.get());
-         configSourceRaw.entrySet().stream().forEach(aa -> logger.infov("Key {0} found", aa.getKey()));
+         configSourceRaw.entrySet()
+               .stream()
+               .forEach(aa -> logger.infov("Key {0} found", aa.getKey()));
+         client.close();
          return Collections.singletonList(toConfigSource(configSourceRaw));
       } catch (InterruptedException | ExecutionException | TimeoutException e) {
          throw new RuntimeException("ETCD timeout on key " + config.configKey.get(), e);
@@ -64,9 +66,6 @@ public class EtcdClientWrapper {
    }
 
    private Client getClient() {
-      if (client != null) {
-         return client;
-      }
       logger.info("Loading ETCD client...");
       logger.infov("ETCD endpoints: {0}", config.agent.endpoints);
       ClientBuilder builder = Client.builder();
@@ -78,7 +77,7 @@ public class EtcdClientWrapper {
       }
       builder.endpoints(config.agent.endpoints.trim()
             .split("\\s*,\\s*"));
-      client = builder.build();
+      Client client = builder.build();
       logger.infov("ETCD client generated");
       return client;
    }
