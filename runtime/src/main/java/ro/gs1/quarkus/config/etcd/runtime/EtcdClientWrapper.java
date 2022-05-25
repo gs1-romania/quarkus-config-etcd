@@ -59,6 +59,7 @@ public class EtcdClientWrapper {
                .stream()
                .forEach(aa -> logger.infov("Key {0} found", aa.getKey()));
          client.close();
+         logger.info("ETCD client closed");
          return Collections.singletonList(toConfigSource(configSourceRaw));
       } catch (InterruptedException | ExecutionException | TimeoutException e) {
          throw new RuntimeException("ETCD timeout on key " + config.configKey.get(), e);
