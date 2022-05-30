@@ -84,10 +84,9 @@ public class EtcdClientWrapper {
    }
 
    public ConfigSource toConfigSource(Map<String, String> response) {
-      logger.debugv("Attempting to convert data of key '{0}' to a list of ConfigSource objects",
-            config.configKey.get());
+      logger.debugv("Attempting to convert data of key {0} to a list of ConfigSource objects", config.configKey.get());
       ConfigSource result = new EtcdPropertiesConfigSource(config.configKey.get(), response, ORDINAL);
-      logger.debugv("Done converting data of key '{0}' into a ConfigSource", config.configKey.get());
+      logger.debugv("Done converting data of key {0} into a ConfigSource", config.configKey.get());
       return result;
    }
 
