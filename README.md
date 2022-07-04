@@ -24,3 +24,8 @@ Inspired from: https://github.com/quarkiverse/quarkus-config-extensions
    quarkus.etcd-config.agent.read-timeout=20S (default 10S)
    quarkus.etcd-config.config-key=/config/${quarkus.application.name} (no default, it will throw an exception at runtime if enabled and not set)
 ```
+
+## Building native
+
+When building to native you need to add --initialize-at-run-time=io.grpc.internal.RetriableStream to your quarkus.native.additional-build-args.
+
