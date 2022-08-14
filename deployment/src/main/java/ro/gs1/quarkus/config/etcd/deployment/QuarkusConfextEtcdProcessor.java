@@ -1,7 +1,5 @@
 package ro.gs1.quarkus.config.etcd.deployment;
 
-import org.jsoup.Connection.Response;
-
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
@@ -16,28 +14,23 @@ class QuarkusConfextEtcdProcessor {
 
    private static final String FEATURE = "quarkus-config-etcd";
 
-
    @BuildStep
    public void feature(BuildProducer<FeatureBuildItem> feature) {
-       feature.produce(new FeatureBuildItem(FEATURE));
+      feature.produce(new FeatureBuildItem(FEATURE));
    }
 
    @BuildStep
    public void enableSsl(BuildProducer<ExtensionSslNativeSupportBuildItem> extensionSslNativeSupport) {
-       extensionSslNativeSupport.produce(new ExtensionSslNativeSupportBuildItem(FEATURE));
+      extensionSslNativeSupport.produce(new ExtensionSslNativeSupportBuildItem(FEATURE));
    }
 
    @BuildStep
    public void registerForReflection(BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
-       reflectiveClass.produce(new ReflectiveClassBuildItem(true, false, false, Response.class));
    }
 
    @BuildStep
    @Record(ExecutionTime.RUNTIME_INIT)
    public RunTimeConfigurationSourceValueBuildItem configure(EtcdConfigRecorder recorder) {
-       return new RunTimeConfigurationSourceValueBuildItem(
-               recorder.configSources());
+      return new RunTimeConfigurationSourceValueBuildItem(recorder.configSources());
    }
-
-   
 }
