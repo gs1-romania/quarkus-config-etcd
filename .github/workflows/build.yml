@@ -29,6 +29,7 @@ jobs:
           gpg-passphrase: GPG_PASSPHRASE
 
       - uses: actions/delete-package-versions@v4
+        continue-on-error: true
         with:
           package-name: 'ro.gs1.quarkus-config-etcd'
           package-type: maven
@@ -36,6 +37,7 @@ jobs:
           min-versions-to-keep: 2
 
       - uses: actions/delete-package-versions@v4
+        continue-on-error: true
         with:
           package-name: 'ro.gs1.quarkus-config-etcd-parent'
           package-type: maven
@@ -43,6 +45,7 @@ jobs:
           min-versions-to-keep: 2
 
       - uses: actions/delete-package-versions@v4
+        continue-on-error: true
         with:
           package-name: 'ro.gs1.quarkus-config-etcd-deployment'
           package-type: maven
