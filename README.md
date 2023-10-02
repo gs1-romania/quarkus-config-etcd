@@ -129,7 +129,7 @@ public class RestResource {
    
    @GET
    public String test() {
-      return foo.bar();  // this will return the value when Foo bean has been initialized.
+      return foo.bar(); // this will return the value when Foo bean has been initialized.
    }
 }
 
