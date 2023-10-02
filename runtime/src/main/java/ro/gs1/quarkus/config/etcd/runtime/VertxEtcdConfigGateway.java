@@ -54,7 +54,8 @@ public class VertxEtcdConfigGateway implements EtcdConfigGateway {
          .setKey(ByteString.copyFromUtf8(etcdKey))
          .setLimit(1)
          .build();
-      Uni<RangeResponse> range = etcdClientChannel.getKVClient().range(request);
+      Uni<RangeResponse> range = etcdClientChannel.getKVClient()
+         .range(request);
       RangeResponse rangeResponse = range.await()
          .atMost(Duration.ofSeconds(10));
       if (rangeResponse.getKvsList()
@@ -86,5 +87,4 @@ public class VertxEtcdConfigGateway implements EtcdConfigGateway {
          throw new RuntimeException(e);
       }
    }
-
 }

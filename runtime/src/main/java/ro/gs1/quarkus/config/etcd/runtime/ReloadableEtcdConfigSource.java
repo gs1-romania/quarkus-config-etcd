@@ -41,7 +41,8 @@ public class ReloadableEtcdConfigSource extends AbstractConfigSource {
             .setCreateRequest(WatchCreateRequest.newBuilder()
                .setKey(ByteString.copyFromUtf8(etcdKey)))
             .build());
-      etcdClientChannel.getWatchClient().watch(watchRequest)
+      etcdClientChannel.getWatchClient()
+         .watch(watchRequest)
          .subscribe()
          .with(watchResponse -> {
                if (watchResponse.getCreated() && watchResponse.getCanceled()) {
@@ -54,10 +55,12 @@ public class ReloadableEtcdConfigSource extends AbstractConfigSource {
                }
                for (Event event : watchResponse.getEventsList()) {
                   KeyValue kv = event.getKv();
-                  logger.debugv("Received event for key: {0}", kv.getKey().toStringUtf8());
+                  logger.debugv("Received event for key: {0}", kv.getKey()
+                     .toStringUtf8());
                   if (!kv.getKey()
                      .equals(ByteString.copyFromUtf8(etcdKey))) {
-                     logger.warnv("Received event for wrong key: {0}", kv.getKey().toStringUtf8());
+                     logger.warnv("Received event for wrong key: {0}", kv.getKey()
+                        .toStringUtf8());
                      continue;
                   }
                   try {

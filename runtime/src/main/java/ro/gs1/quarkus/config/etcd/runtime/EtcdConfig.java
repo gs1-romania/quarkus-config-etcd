@@ -24,8 +24,6 @@ public interface EtcdConfig {
 
    /**
     * If set to true, the gRPC channel will not be closed and a watcher will be placed on the configKey.
-    *
-    * @return
     */
    @WithDefault("false")
    boolean reloadable();
