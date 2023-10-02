@@ -2,15 +2,12 @@ package ro.gs1.quarkus.config.etcd.deployment;
 
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
-import io.quarkus.deployment.annotations.ExecutionTime;
-import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.ExtensionSslNativeSupportBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
-import io.quarkus.deployment.builditem.RunTimeConfigurationSourceValueBuildItem;
-import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
-import ro.gs1.quarkus.config.etcd.runtime.EtcdConfigRecorder;
+import io.quarkus.deployment.builditem.RunTimeConfigBuilderBuildItem;
+import ro.gs1.quarkus.config.etcd.runtime.EtcdConfigSourceFactoryBuilder;
 
-class QuarkusConfextEtcdProcessor {
+class QuarkusContextEtcdProcessor {
 
    private static final String FEATURE = "quarkus-config-etcd";
 
@@ -25,12 +22,7 @@ class QuarkusConfextEtcdProcessor {
    }
 
    @BuildStep
-   public void registerForReflection(BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
-   }
-
-   @BuildStep
-   @Record(ExecutionTime.RUNTIME_INIT)
-   public RunTimeConfigurationSourceValueBuildItem configure(EtcdConfigRecorder recorder) {
-      return new RunTimeConfigurationSourceValueBuildItem(recorder.configSources());
+   void etcdConfigFactory(BuildProducer<RunTimeConfigBuilderBuildItem> runTimeConfigBuilder) {
+      runTimeConfigBuilder.produce(new RunTimeConfigBuilderBuildItem(EtcdConfigSourceFactoryBuilder.class.getName()));
    }
 }

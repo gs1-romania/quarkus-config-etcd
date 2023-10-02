@@ -1,64 +1,42 @@
 package ro.gs1.quarkus.config.etcd.runtime;
 
+import io.quarkus.runtime.annotations.ConfigGroup;
+import io.quarkus.runtime.annotations.ConfigPhase;
+import io.quarkus.runtime.annotations.ConfigRoot;
+import io.quarkus.runtime.configuration.DurationConverter;
+import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithConverter;
+import io.smallrye.config.WithDefault;
+import ro.gs1.quarkus.etcd.runtime.config.EtcdClientConfig;
+
 import java.time.Duration;
 import java.util.Optional;
 
-import io.quarkus.runtime.annotations.ConfigGroup;
-import io.quarkus.runtime.annotations.ConfigItem;
-import io.quarkus.runtime.annotations.ConfigPhase;
-import io.quarkus.runtime.annotations.ConfigRoot;
-
-@ConfigRoot(name = "etcd-config", phase = ConfigPhase.BOOTSTRAP)
-public class EtcdConfig {
+@ConfigRoot(phase = ConfigPhase.RUN_TIME)
+@ConfigMapping(prefix = "quarkus.etcd-config")
+public interface EtcdConfig {
 
    /**
-    * If set to true, the application will attempt to look up the configuration
-    * from ETCD
+    * If set to true, the application will attempt to look up the configuration from ETCD
     */
-   @ConfigItem(defaultValue = "false")
-   boolean enabled;
+   @WithDefault("false")
+   boolean enabled();
+
+   /**
+    * If set to true, the gRPC channel will not be closed and a watcher will be placed on the configKey.
+    *
+    * @return
+    */
+   @WithDefault("false")
+   boolean reloadable();
 
    /**
     * ETCD agent related configuration
     */
-   @ConfigItem
-   AgentConfig agent;
+   EtcdClientConfig agent();
 
    /**
     * The key in ETCD where the properties are stored
     */
-   @ConfigItem
-   Optional<String> configKey;
-
-   @ConfigGroup
-   public static class AgentConfig {
-
-      /**
-       * Endpoints of ETCD
-       */
-      @ConfigItem(defaultValue = "http://localhost:2379")
-      String endpoints;
-
-      /**
-       * User of ETCD
-       */
-      @ConfigItem(defaultValue = "")
-      Optional<String> user;
-
-      /**
-       * Password of ETCD
-       */
-      @ConfigItem(defaultValue = "")
-      Optional<String> password;
-      
-
-      /**
-       * The amount of time to wait for a read on a socket before an exception is thrown.
-       * <p>
-       * Specify `0` to wait indefinitely.
-       * Default to 10 seconds.
-       */
-      @ConfigItem(defaultValue = "10S")
-      Duration readTimeout;
-   }
+   Optional<String> configKey();
 }

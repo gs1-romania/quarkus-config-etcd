@@ -4,88 +4,35 @@
 	<parent>
 		<groupId>ro.gs1</groupId>
 		<artifactId>quarkus-config-etcd-parent</artifactId>
-		<version>1.2-SNAPSHOT</version>
+		<version>0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>quarkus-config-etcd</artifactId>
-	<name>Quarkus Config Etcd - Runtime</name>
-	<distributionManagement>
-		<repository>
-			<id>github</id>
-			<name>GitHub GS1 Apache Maven Packages</name>
-			<url>https://maven.pkg.github.com/gs1-romania/quarkus-config-etcd</url>
-		</repository>
-		<snapshotRepository>
-			<id>github</id>
-			<name>GitHub GS1 Apache Maven Packages snapshots</name>
-			<url>https://maven.pkg.github.com/gs1-romania/quarkus-config-etcd</url>
-		</snapshotRepository>
-	</distributionManagement>
-	<repositories>
-		<repository>
-			<id>github</id>
-			<url>https://maven.pkg.github.com/gs1-romania/quarkus-config-etcd</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-	</repositories>
-	<developers>
-		<developer>
-			<id>liviu</id>
-			<name>Liviu Gabriel Savu</name>
-			<email>liviu.savu@gs1.ro</email>
-			<organization>GS1 ROMANIA</organization>
-			<organizationUrl>https://www.gs1.ro</organizationUrl>
-			<timezone>+2</timezone>
-		</developer>
-	</developers>
+	<name>Quarkus - Config Extensions - etcd - Runtime</name>
 	<dependencies>
 		<dependency>
 			<groupId>io.quarkus</groupId>
 			<artifactId>quarkus-arc</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>io.etcd</groupId>
-			<artifactId>jetcd-core</artifactId>
-			<version>${jetcd.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>io.grpc</groupId>
-					<artifactId>grpc-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.grpc</groupId>
-					<artifactId>grpc-netty</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.grpc</groupId>
-					<artifactId>grpc-protobuf</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.grpc</groupId>
-					<artifactId>grpc-stub</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.grpc</groupId>
-					<artifactId>grpc-grpclb</artifactId>
-				</exclusion>
-			</exclusions>
+			<groupId>ro.gs1</groupId>
+			<artifactId>quarkus-etcd-client</artifactId>
+			<version>${quarkus.etcd.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>ro.gs1.quarkus-etcd</groupId>
-			<artifactId>quarkus-etcd</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
 		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>io.quarkus</groupId>
-				<artifactId>quarkus-bootstrap-maven-plugin</artifactId>
-				<version>${quarkus.version}</version>
+				<artifactId>quarkus-extension-maven-plugin</artifactId>
+				<version>${quarkus.platform.version}</version>
 				<executions>
 					<execution>
 						<phase>compile</phase>
@@ -105,7 +52,7 @@
 						<path>
 							<groupId>io.quarkus</groupId>
 							<artifactId>quarkus-extension-processor</artifactId>
-							<version>${quarkus.version}</version>
+							<version>${quarkus.platform.version}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
