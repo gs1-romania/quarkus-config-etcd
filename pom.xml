@@ -3,7 +3,7 @@
    <modelVersion>4.0.0</modelVersion>
    <groupId>ro.gs1</groupId>
    <artifactId>quarkus-config-etcd-parent</artifactId>
-   <version>0.2-SNAPSHOT</version>
+   <version>0.3-SNAPSHOT</version>
    <packaging>pom</packaging>
    <name>Quarkus - Config Extensions - etcd - Parent</name>
    <description>A Quarkus etcd config source extension.</description>
@@ -38,14 +38,14 @@
    <properties>
       <compiler-plugin.version>3.11.0</compiler-plugin.version>
       <failsafe-plugin.version>3.2.2</failsafe-plugin.version>
-      <maven.compiler.release>11</maven.compiler.release>
+      <maven.compiler.release>17</maven.compiler.release>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
       <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
       <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-      <quarkus.platform.version>3.6.0</quarkus.platform.version>
+      <quarkus.platform.version>3.31.4</quarkus.platform.version>
       <surefire-plugin.version>3.2.2</surefire-plugin.version>
-      <quarkus.etcd.version>0.3</quarkus.etcd.version>
+      <quarkus.etcd.version>0.4</quarkus.etcd.version>
    </properties>
    <dependencyManagement>
       <dependencies>
@@ -183,18 +183,22 @@
       <profile>
          <id>release-sona</id>
          <properties>
-            <project.scm.id>ossrh</project.scm.id>
+            <project.scm.id>central</project.scm.id>
          </properties>
-         <distributionManagement>
-            <snapshotRepository>
-               <id>ossrh</id>
-               <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
-            </snapshotRepository>
-            <repository>
-               <id>ossrh</id>
-               <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-            </repository>
-         </distributionManagement>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.sonatype.central</groupId>
+                  <artifactId>central-publishing-maven-plugin</artifactId>
+                  <version>0.6.0</version>
+                  <extensions>true</extensions>
+                  <configuration>
+                     <publishingServerId>central</publishingServerId>
+                     <autoPublish>true</autoPublish>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
       </profile>
       <profile>
          <id>release-github</id>
